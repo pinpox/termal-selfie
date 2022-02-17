@@ -19,5 +19,4 @@ steps:
   - nix --experimental-features "nix-command flakes" flake check --show-trace
 - name: Build sdImage
   commands:
-  - nix build -v -L '.#nixosConfigurations.kartoffel.config.system.build.toplevel'
   - nix build -v -L '.#sd-image.config.system.build.sdImage'
