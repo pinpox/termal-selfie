@@ -1,0 +1,23 @@
+kind: pipeline
+type: exec
+name: Build all hosts
+
+platform:
+  os: linux
+  arch: amd64
+
+clone:
+  depth: 1
+
+steps:
+- name: Show flake info
+  commands:
+  - nix --experimental-features "nix-command flakes" flake show
+  - nix --experimental-features "nix-command flakes" flake metadata
+- name: Run flake checks
+  commands:
+  - nix --experimental-features "nix-command flakes" flake check --show-trace
+- name: Build sdImage
+  commands:
+  - nix build -v -L '.#nixosConfigurations.kartoffel.config.system.build.toplevel'
+  - nix build -v -L '.#sd-image.config.system.build.sdImage'
