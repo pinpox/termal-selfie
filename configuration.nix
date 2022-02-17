@@ -1,40 +1,11 @@
 { config, pkgs, lib, ... }: {
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.root = {
-    openssh.authorizedKeys.keyFiles = [
-      (pkgs.fetchurl {
-        url = "https://github.com/mayniklas.keys";
-        sha256 = "174dbx0kkrfdfdjswdny25nf7phgcb9k8i6z3rqqcy9l24f8xcp3";
-      })
-    ];
-  };
+  # Hardware-specific settings
 
-  nix.allowedUsers = [ "root" ];
+  # Required for the Wireless firmware
+  hardware.enableRedistributableFirmware = true;
 
-  networking = {
-    hostName = "pi4b";
-    interfaces.eth0 = { useDHCP = true; };
-  };
-
-  # Set your time zone.
-  time = { timeZone = "Europe/Berlin"; };
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "de";
-  };
-
-  # Enable the OpenSSH daemon.
-  services.openssh = {
-    enable = true;
-    passwordAuthentication = false;
-    startWhenNeeded = true;
-    challengeResponseAuthentication = false;
-
-  };
+  powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
 
   boot = {
     loader = {
@@ -49,12 +20,39 @@
     };
   };
 
-  # Required for the Wireless firmware
-  hardware.enableRedistributableFirmware = true;
+  # Define a user account.
+  users.users.root = {
+    openssh.authorizedKeys.keyFiles = [
+      (pkgs.fetchurl {
+        url = "https://github.com/pinpox.keys";
+        sha256 = "sha256-Cf/PSZemROU/Y0EEnr6A+FXE0M3+Kso5VqJgomGST/U=";
+      })
+    ];
+  };
 
-  powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
+  # Time zone and internationalisation
+  time = { timeZone = "Europe/Berlin"; };
 
-  # nix
+  i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "de";
+  };
+
+  # Networking and SSH
+  networking = {
+    hostName = "photobooth";
+    interfaces.eth0 = { useDHCP = true; };
+  };
+
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+    startWhenNeeded = true;
+    kbdInteractiveAuthentication = false;
+  };
+
+  # Nix settings
   nix = {
     package = pkgs.nixFlakes;
     extraOptions = ''
@@ -63,8 +61,13 @@
       min-free = ${toString (100 * 1024 * 1024)}
       max-free = ${toString (1024 * 1024 * 1024)}
     '';
-    # Save space by hardlinking store files
-    autoOptimiseStore = true;
+
+    settings = {
+      # Save space by hardlinking store files
+      auto-optimise-store = true;
+      allowed-users = [ "root" ];
+    };
+
     # Clean up old generations after 30 days
     gc = {
       automatic = true;
@@ -73,10 +76,20 @@
     };
   };
 
+ boot.initrd.availableKernelModules = [ "usbhid" ];
+  boot.initrd.kernelModules = [ ];
+  boot.kernelModules = [ ];
+  boot.extraModulePackages = [ ];
+
+  # Use 1GB of additional swap memory in order to not run out of memory
+  # when installing lots of things while running other things at the same time.
+  # swapDevices = [{ device = "/swapfile"; size = 1024; }];
+  swapDevices = [ ];
+
   ##############################
 
   # boot.kernelPackages = pkgs.linuxPackages_rpi3;
-  # environment.systemPackages = with pkgs; [ libraspberrypi ];
+  environment.systemPackages = with pkgs; [ libraspberrypi ];
 
   # File systems configuration for using the installer's partition layout
   # fileSystems = {
@@ -94,12 +107,7 @@
 
   # Preserve space by sacrificing documentation and history
   # documentation.nixos.enable = false;
-  # nix.gc.automatic = true;
-  # nix.gc.options = "--delete-older-than 30d";
   # boot.cleanTmpDir = true;
 
-  # Use 1GB of additional swap memory in order to not run out of memory
-  # when installing lots of things while running other things at the same time.
-  # swapDevices = [{ device = "/swapfile"; size = 1024; }];
 
 }
