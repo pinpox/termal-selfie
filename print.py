@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 from escpos import *
 import cv2
+import sys
+
+
+# Allow overriding default device
+serialTTY = '/dev/ttyUSB0'
+if len(sys.argv) > 1:
+    serialTTY = sys.argv[1]
 
 # Capture image from webcam
 camera = cv2.VideoCapture(0)
@@ -18,7 +25,7 @@ image = cv2.resize(image,dim)
 cv2.imwrite('capture.png', image)
 
 # Initialize printer connection
-p = printer.Serial(devfile='/dev/ttyUSB0',
+p = printer.Serial(devfile=serialTTY,
            baudrate=9600,
            bytesize=8,
            parity='N',

@@ -7,7 +7,6 @@ let
 
 in pkgs.mkShell rec {
 
-
   name = "tf-ansible-env";
   venvDir = "./.venv";
   buildInputs = [
@@ -16,7 +15,6 @@ in pkgs.mkShell rec {
     pythonPackages.setuptools
     zlib
     opencv
-
 
     # Those are dependencies that we would like to use from nixpkgs, which will
     # add them to PYTHONPATH and thus make them accessible from within the venv.
@@ -55,7 +53,9 @@ in pkgs.mkShell rec {
           exit 1
       fi
     }
-    export LD_LIBRARY_PATH=${lib.strings.makeLibraryPath [ zlib stdenv.cc.cc.lib libGL glib ]}:$LD_LIBRARY_PATH;
+    export LD_LIBRARY_PATH=${
+      lib.strings.makeLibraryPath [ zlib stdenv.cc.cc.lib libGL glib ]
+    }:$LD_LIBRARY_PATH;
 
     echo "Activating python venv"
     source_check ./.venv/bin/activate

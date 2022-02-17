@@ -76,7 +76,7 @@
     };
   };
 
- boot.initrd.availableKernelModules = [ "usbhid" ];
+  boot.initrd.availableKernelModules = [ "usbhid" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
@@ -108,6 +108,5 @@
   # Preserve space by sacrificing documentation and history
   # documentation.nixos.enable = false;
   # boot.cleanTmpDir = true;
-
 
 }

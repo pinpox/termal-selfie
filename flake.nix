@@ -38,15 +38,6 @@
       in rec {
         packages = flake-utils.lib.flattenTree rec {
 
-          # wp-gen    pkgs.python3Packages.buildPythonPackage rec {
-          #           name = "getBook";
-          #           src = ./.;
-          #           propagatedBuildInputs = with python3Packages; [
-          #             requests
-          #             libgenApi
-          #           ];
-          #         };
-
           python-escpos = with pkgs.python3Packages;
             pkgs.python3Packages.buildPythonPackage rec {
               pname = "python-escpos";
@@ -76,8 +67,7 @@
 
               # argparse is just required for python2.6
               prePatch = ''
-                substituteInPlace setup.py \
-                  --replace "'argparse'," ""
+                substituteInPlace setup.py --replace "'argparse'," ""
               '';
 
               # Checks try to write to $HOME, which does not work with nix
@@ -85,20 +75,30 @@
             };
 
           photobooth-print = pkgs.python3Packages.buildPythonApplication {
-            pname = "pb-print";
+            pname = "photobooth-print";
             version = "1.0";
-            propagatedBuildInputs = with pkgs.python3Packages; [ flask packages.python-escpos opencv4 ];
+            propagatedBuildInputs = with pkgs.python3Packages; [
+              packages.python-escpos
+              opencv4
+            ];
             src = ./.;
           };
 
-          photobooth-web = pkgs.python3Packages.buildPythonApplication {
-            pname = "pb-web";
-            version = "1.0";
-            propagatedBuildInputs = with pkgs.python3Packages; [ flask ];
-            src = ./.;
-          };
+          # photobooth-web = pkgs.python3Packages.buildPythonApplication {
+          #   pname = "photobooth-web";
+          #   version = "1.0";
+          #   propagatedBuildInputs = with pkgs.python3Packages; [ flask ];
+          #   src = ./.;
+          # };
 
         };
-        defaultPackage = packages.photobooth;
+
+        apps.photobooth-print = flake-utils.lib.mkApp {
+          drv = packages.photobooth-print;
+          exePath = "/bin/print.py";
+        };
+
+        defaultApp = apps.photobooth-print;
+        defaultPackage = packages.photobooth-print;
       });
 }
