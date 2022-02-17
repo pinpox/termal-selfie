@@ -47,10 +47,54 @@
           #           ];
           #         };
 
-          photobooth= pkgs.python3Packages.buildPythonApplication {
-            pname = "demo-app";
+          python-escpos = with pkgs.python3Packages;
+            pkgs.python3Packages.buildPythonPackage rec {
+              pname = "python-escpos";
+              version = "2.2.0";
+
+              src = pkgs.python3Packages.fetchPypi {
+                inherit pname version;
+                sha256 = "sha256-zmGWZ1t6mEame653dpd2l/UD2ugQMPHFMMH0/39SmDc=";
+              };
+
+              propagatedBuildInputs = [
+                numpy
+                setuptools_scm
+                appdirs
+                pyyaml
+                qrcode
+                pyserial
+                argcomplete
+                pyusb
+                scripttest
+                nose
+                tox
+                sphinx
+                mock
+                hypothesis
+              ];
+
+              # argparse is just required for python2.6
+              prePatch = ''
+                substituteInPlace setup.py \
+                  --replace "'argparse'," ""
+              '';
+
+              # Checks try to write to $HOME, which does not work with nix
+              doCheck = false;
+            };
+
+          photobooth-print = pkgs.python3Packages.buildPythonApplication {
+            pname = "pb-print";
             version = "1.0";
-            propagatedBuildInputs =  with pkgs.python3Packages;[ flask ];
+            propagatedBuildInputs = with pkgs.python3Packages; [ flask packages.python-escpos opencv4 ];
+            src = ./.;
+          };
+
+          photobooth-web = pkgs.python3Packages.buildPythonApplication {
+            pname = "pb-web";
+            version = "1.0";
+            propagatedBuildInputs = with pkgs.python3Packages; [ flask ];
             src = ./.;
           };
 

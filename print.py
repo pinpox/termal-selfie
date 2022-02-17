@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from escpos import *
 import cv2
 
@@ -6,7 +7,7 @@ camera = cv2.VideoCapture(0)
 return_value, image = camera.read()
 
 # Rotate and scale
-image = cv2.rotate(image, cv2.cv2.ROTATE_90_CLOCKWISE)
+image = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
 scale_percent = 50 # percent of original size
 width = int(image.shape[1] * scale_percent / 100)
 height = int(image.shape[0] * scale_percent / 100)
