@@ -32,3 +32,9 @@ Back of Printer (DB25)
     \_  │1
       \_│
 ```
+
+# Take photo and print
+
+```bash
+nix run
+```
