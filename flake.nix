@@ -86,6 +86,17 @@
             src = ./.;
           };
 
+          photobooth-listen-test = pkgs.python3Packages.buildPythonApplication {
+            pname = "photobooth-listen-test";
+            version = "1.0";
+            # propagatedBuildInputs = with pkgs.python3Packages; [
+            #   packages.python-escpos
+            #   opencv4
+            # ];
+              doCheck = false;
+            src = ./.;
+          };
+
           # photobooth-web = pkgs.python3Packages.buildPythonApplication {
           #   pname = "photobooth-web";
           #   version = "1.0";
@@ -95,12 +106,19 @@
 
         };
 
-        apps.photobooth-print = flake-utils.lib.mkApp {
-          drv = packages.photobooth-print;
-          exePath = "/bin/print.py";
+        apps = {
+          photobooth-print = flake-utils.lib.mkApp {
+            drv = packages.photobooth-print;
+            exePath = "/bin/print.py";
+          };
+
+          photobooth-listen-test = flake-utils.lib.mkApp {
+            drv = packages.photobooth-listen-test;
+            exePath = "/bin/test.py";
+          };
         };
 
-        defaultApp = apps.photobooth-print;
-        defaultPackage = packages.photobooth-print;
+        # defaultApp = apps.photobooth-print;
+        # defaultPackage = packages.photobooth-print;
       });
 }

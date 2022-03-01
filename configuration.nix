@@ -8,6 +8,11 @@
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
 
   boot = {
+
+  kernelParams = [
+    "console=ttyS1,115200n8"
+  ];
+
     loader = {
       raspberryPi = {
         firmwareConfig = ''

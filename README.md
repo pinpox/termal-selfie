@@ -9,15 +9,15 @@ Back of Printer (DB25)
  25│    │                            ┌───────────────────────────────┐
    │    │12                          │          MAX3232 Board        │
  24│    │                            │                               │
-   │    │11                          │       o                       │            ┌┬────────────────────────────┐
- 23│    │                            │   o                 VCC  o ───┼────────────┼┘ o  +5V                     │
-   │    │10                          │       o                       │            │              USB to TTL     │
- 22│    │                            │   o                 RXD  o ───┼────────────┼─ o  TXD                     │
-   │    │9                           │       o───────┐               │            │                Adapter      │ USB ─────►
- 21│    │                            │   o           │     TXD  o ───┼────────────┼─ o  RXD                     │
-   │    │8                           │       o───┐   │               │            │                             │
- 20│    │                            │   o       │   │     GND  o ───┼─────┬──────┼┐ o  GND                     │
-   │    │7──────────────────┐        │       o   │   │               │     │      └┴────────────────────────────┘
+   │    │11                          │       o                       │          
+ 23│    │                            │   o                 VCC  o ───┼──────────
+   │    │10                          │       o                       │          
+ 22│    │                            │   o                 RXD  o ───┼──────────
+   │    │9                           │       o───────┐               │          
+ 21│    │                            │   o           │     TXD  o ───┼──────────
+   │    │8                           │       o───┐   │               │          
+ 20│    │                            │   o       │   │     GND  o ───┼─────┬────
+   │    │7──────────────────┐        │       o   │   │               │     │    
  19│    │                   │        │           │   │               │     │
    │    │6                  │        └───────────┼───┼───────────────┘     │
  18│    │                   │                    │   │                     │
@@ -37,4 +37,18 @@ Back of Printer (DB25)
 
 ```bash
 nix run
+```
+
+# Update config
+
+```bash
+nixos-rebuild switch --flake '.#photobooth-pi' --target-host 'root@192.168.2.5' -L
+```
+
+
+# Build image
+
+```bash
+nix build .#sd-image.config.system.build.sdImage
+sudo dd if=result/sd-image/raspi-image-...-aarch64-linux.img of=/dev/sdX status=progress bs=4M oflag=sync
 ```
