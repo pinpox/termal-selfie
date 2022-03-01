@@ -89,7 +89,15 @@
   ##############################
 
   # boot.kernelPackages = pkgs.linuxPackages_rpi3;
-  environment.systemPackages = with pkgs; [ libraspberrypi ];
+  environment.systemPackages = with pkgs; [
+
+    # Needed for operation
+    libraspberrypi
+
+    # Optional, for development
+    git
+
+  ];
 
   # File systems configuration for using the installer's partition layout
   # fileSystems = {

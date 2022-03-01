@@ -25,6 +25,8 @@
           "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
           ./configuration.nix
           {
+            nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
+            nix.registry.nixpkgs.flake = nixpkgs;
             sdImage.compressImage = false;
             sdImage.imageBaseName = "raspi-image";
           }
