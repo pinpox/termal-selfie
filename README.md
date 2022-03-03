@@ -46,9 +46,9 @@ nixos-rebuild switch --flake '.#photobooth-pi' --target-host 'root@192.168.2.5' 
 ```
 
 
-# Build image
+# Build sd-card image
 
 ```bash
-nix build .#sd-image.config.system.build.sdImage
+nix build .#raspi-image
 sudo dd if=result/sd-image/raspi-image-...-aarch64-linux.img of=/dev/sdX status=progress bs=4M oflag=sync
 ```
