@@ -43,7 +43,10 @@ func main() {
 	// p.LineFeed()
 	log.Println("printing")
 
-	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test")
+	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
 
 	// p.WriteRaw([]byte{'\n'})
 
