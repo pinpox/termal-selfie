@@ -43,7 +43,7 @@
             systemd.services.photobooth = {
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
-              description = "Photobooth Listen Test";
+              description = "Photobooth App";
               serviceConfig = {
 
                 # Makes python output visible in the syslog
@@ -52,7 +52,7 @@
                 # User = "photobooth"; # TODO fix GPIO permissions
                 User = "root";
                 ExecStart = "${
-                    self.packages."${system}".photobooth-listen-test
+                    self.packages."${system}".photobooth-app
                   }/bin/test.py";
 
 
@@ -108,19 +108,8 @@
               doCheck = false;
             };
 
-          photobooth-print = pkgs.python3Packages.buildPythonApplication {
-            pname = "photobooth-print";
-            version = "1.0";
-            propagatedBuildInputs = with pkgs.python3Packages; [
-              packages.python-escpos
-              opencv4
-            ];
-            doCheck = false;
-            src = ./.;
-          };
-
-          photobooth-listen-test = pkgs.python3Packages.buildPythonApplication {
-            pname = "photobooth-listen-test";
+          photobooth-app = pkgs.python3Packages.buildPythonApplication {
+            pname = "photobooth-app";
             version = "1.0";
 
             propagatedBuildInputs = with pkgs.python3Packages; [
@@ -129,31 +118,23 @@
               opencv4
             ];
             doCheck = false;
-            src = ./test;
+            src = ./photobooth-app;
           };
-
-          # photobooth-web = pkgs.python3Packages.buildPythonApplication {
-          #   pname = "photobooth-web";
-          #   version = "1.0";
-          #   propagatedBuildInputs = with pkgs.python3Packages; [ flask ];
-          #   src = ./.;
-          # };
-
         };
 
         apps = {
-          photobooth-print = flake-utils.lib.mkApp {
-            drv = packages.photobooth-print;
-            exePath = "/bin/print.py";
+          photobooth-testprint = flake-utils.lib.mkApp {
+            drv = packages.photobooth-app;
+            exePath = "/bin/testprint.py";
           };
 
-          photobooth-listen-test = flake-utils.lib.mkApp {
-            drv = packages.photobooth-listen-test;
-            exePath = "/bin/test.py";
+          photobooth-app = flake-utils.lib.mkApp {
+            drv = packages.photobooth-app;
+            exePath = "/bin/app.py";
           };
         };
 
-        # defaultApp = apps.photobooth-print;
-        # defaultPackage = packages.photobooth-print;
+        defaultApp = apps.photobooth-testprint;
+        defaultPackage = packages.photobooth-app;
       });
 }

@@ -1,8 +1,0 @@
-github.com/hennedo/escpos v0.0.2-0.20220302194128-2e4657572c50 h1:l1LiAqNYTKiZnF51QHjycpo+euFiE0wzo1q+dl9u+XU=
-github.com/hennedo/escpos v0.0.2-0.20220302194128-2e4657572c50/go.mod h1:W6HIhrS6mSFGSsxpfqIKXnZsujl0x/2lM5xDIAKGkow=
-github.com/qiniu/iconv v1.2.0 h1:2LJKwoF+4LJ3lNM+7cE3P1kNQzAI/HMZuWhkmFoY2U8=
-github.com/qiniu/iconv v1.2.0/go.mod h1:5bxb2h9lptZt2eHLgY+Jw4X06TMtKb6tvvok0DwSwGA=
-github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07 h1:UyzmZLoiDWMRywV4DUYb9Fbt8uiOSooupjTq10vpvnU=
-github.com/tarm/serial v0.0.0-20180830185346-98f6abe2eb07/go.mod h1:kDXzergiv9cbyO7IOYJZWg1U88JhDg3PB6klq9Hg2pA=
-golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 h1:nhht2DYV/Sn3qOayu8lM+cU1ii9sTLUeBQwQQfUHtrs=
-golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=

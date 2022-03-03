@@ -2,10 +2,10 @@
 
 from setuptools import setup, find_packages
 
-setup(name='photobooth-listen-test',
+setup(name='photobooth-app',
       version='1.0',
       # Modules to import from other scripts:
       packages=find_packages(),
       # Executables
-      scripts=["test.py"],
+      scripts=["app.py", "testprint.py"],
      )
