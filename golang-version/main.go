@@ -1,9 +1,11 @@
 package main
 
 import (
+	"image"
 	_ "image/gif"
 	_ "image/jpeg"
 	"log"
+	"os"
 
 	"github.com/hennedo/escpos"
 
@@ -25,22 +27,22 @@ func main() {
 	log.Println("setting config")
 	p.SetConfig(escpos.ConfigEpsonTMT88II)
 
-	// f, err := os.Open("./logo.gif")
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// defer f.Close()
+	f, err := os.Open("./logo.gif")
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
 
-	// img, fmtName, err := image.Decode(f)
+	img, fmtName, err := image.Decode(f)
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	if err != nil {
+		panic(err)
+	}
 
-	// log.Println(fmtName)
-	// p.PrintImage(img)
+	log.Println(fmtName)
+	p.PrintImage(img)
 
-	// p.LineFeed()
+	p.LineFeed()
 	log.Println("printing")
 
 	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
