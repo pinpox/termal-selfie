@@ -1,0 +1,3 @@
+[submodule "escpos-fork"]
+	path = escpos-fork
+	url = https://github.com/hennedo/escpos
