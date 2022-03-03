@@ -48,10 +48,27 @@ func main() {
 	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
 	p.Size(1, 1).Justify(escpos.JustifyCenter).Write("This is a test\n")
 
-	// p.WriteRaw([]byte{'\n'})
+	p.LineFeed()
 
-	// png, err := qrcode.Encode("https://example.org", qrcode.Medium, 256)
-	// p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
+	p.Size(1, 1).Justify(escpos.JustifyLeft).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyLeft).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyLeft).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyLeft).Write("This is a test\n")
+
+	p.LineFeed()
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+
+	p.LineFeed()
+	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
+
+	p.LineFeed()
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
+	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
 
 	// convert []byte to image for saving to file
 	// img2, _, _ := image.Decode(bytes.NewReader(png))
