@@ -17,6 +17,9 @@ steps:
 - name: Run flake checks
   commands:
   - nix --experimental-features "nix-command flakes" flake check --show-trace
-- name: Build sdImage
+- name: Build photobooth-app
   commands:
-  - nix build -v -L '.#sd-image.config.system.build.sdImage'
+  - nix build -v -L '.#photobooth-app'
+- name: Build sd-card image
+  commands:
+  - nix build -v -L '.#raspi-image'
