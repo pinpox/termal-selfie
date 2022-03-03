@@ -17,6 +17,9 @@ steps:
 - name: Run flake checks
   commands:
   - nix --experimental-features "nix-command flakes" flake check --show-trace
+- name: Build python-escpos
+  commands:
+  - nix build -v -L '.#python-escpos'
 - name: Build photobooth-app
   commands:
   - nix build -v -L '.#photobooth-app'
