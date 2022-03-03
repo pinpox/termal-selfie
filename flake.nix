@@ -16,35 +16,40 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     with inputs;
     rec {
+
+      nixosModules.photobooth = { config, pkgs, lib, ... }: {
+
+        # Service
+        systemd.services.photobooth = {
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
+          description = "Photobooth App";
+          serviceConfig = {
+
+            # Makes python output visible in the syslog
+            Environment = [ "PYTHONUNBUFFERED=true" ];
+
+            User = "root";
+            ExecStart =
+              "${self.packages."${pkgs.system}".photobooth-app}/bin/app.py";
+            Restart = "on-failure";
+            RestartSec = "5s";
+          };
+        };
+      };
+
       nixosConfigurations.photobooth-pi = nixpkgs.lib.nixosSystem rec {
         system = "aarch64-linux";
         modules = [
           "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
           ./configuration.nix
+          self.nixosModules.photobooth
           {
             nix.nixPath = [ "nixpkgs=${nixpkgs}" ];
             nix.registry.nixpkgs.flake = nixpkgs;
             sdImage.compressImage = false;
             sdImage.imageBaseName = "raspi-image";
 
-            # Service
-            systemd.services.photobooth = {
-              wantedBy = [ "multi-user.target" ];
-              after = [ "network.target" ];
-              description = "Photobooth App";
-              serviceConfig = {
-
-                # Makes python output visible in the syslog
-                Environment = [ "PYTHONUNBUFFERED=true" ];
-
-                User = "root";
-                ExecStart =
-                  "${self.packages."${system}".photobooth-app}/bin/app.py";
-
-                Restart = "on-failure";
-                RestartSec = "5s";
-              };
-            };
           }
         ];
       };
@@ -54,6 +59,7 @@
       let pkgs = nixpkgs.legacyPackages.${system};
 
       in rec {
+
         packages = flake-utils.lib.flattenTree rec {
 
           python-escpos = with pkgs.python3Packages;
