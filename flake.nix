@@ -45,10 +45,16 @@
               after = [ "network.target" ];
               description = "Photobooth Listen Test";
               serviceConfig = {
-                User = "photobooth";
+
+                # Makes python output visible in the syslog
+                Environment = [ "PYTHONUNBUFFERED=true" ];
+
+                # User = "photobooth"; # TODO fix GPIO permissions
+                User = "root";
                 ExecStart = "${
                     self.packages."${system}".photobooth-listen-test
                   }/bin/test.py";
+
 
                 # ExecStop = ''${pkgs.screen}/bin/screen -S irc -X quit'';
                 Restart = "on-failure";
@@ -102,31 +108,6 @@
               doCheck = false;
             };
 
-          photobooth-test = pkgs.buildGoModule rec {
-
-            pname = "photobooth-test";
-            version = "0.0.10";
-
-            vendorSha256 = null;
-
-            buildInputs = with pkgs; [
-              libglvnd.dev
-              xlibs.libXext.dev
-              xlibs.libXi.dev
-              xorg.libX11
-              xorg.libX11.dev
-              xorg.libXcursor
-              xorg.libXft
-              xorg.libXinerama
-              xorg.libXrandr
-              xorg.libXxf86vm
-              xorg.xinput
-            ];
-
-            nativeBuildInputs = with pkgs; [ pkg-config ];
-            src =  ./golang-version;
-          };
-
           photobooth-print = pkgs.python3Packages.buildPythonApplication {
             pname = "photobooth-print";
             version = "1.0";
@@ -141,6 +122,12 @@
           photobooth-listen-test = pkgs.python3Packages.buildPythonApplication {
             pname = "photobooth-listen-test";
             version = "1.0";
+
+            propagatedBuildInputs = with pkgs.python3Packages; [
+              python-periphery
+              packages.python-escpos
+              opencv4
+            ];
             doCheck = false;
             src = ./test;
           };
