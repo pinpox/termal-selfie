@@ -16,10 +16,7 @@
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     with inputs;
     rec {
-      nixosConfigurations.photobooth-pi = sd-image;
-
-      # nix build .#sd-image.config.system.build.sdImage
-      sd-image = nixpkgs.lib.nixosSystem rec {
+      nixosConfigurations.photobooth-pi = nixpkgs.lib.nixosSystem rec {
         system = "aarch64-linux";
         modules = [
           "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64.nix"
@@ -30,27 +27,20 @@
             sdImage.compressImage = false;
             sdImage.imageBaseName = "raspi-image";
 
-            # User and group
-            users.users.photobooth = {
-              isSystemUser = true;
-              description = "photobooth system user";
-              group = "photobooth";
-            };
-
-            users.groups.photoboot.name = "photobooth";
-
             # Service
             systemd.services.photobooth = {
               wantedBy = [ "multi-user.target" ];
               after = [ "network.target" ];
-              description = "Photobooth Listen Test";
+              description = "Photobooth App";
               serviceConfig = {
-                User = "photobooth";
-                ExecStart = "${
-                    self.packages."${system}".photobooth-listen-test
-                  }/bin/test.py";
 
-                # ExecStop = ''${pkgs.screen}/bin/screen -S irc -X quit'';
+                # Makes python output visible in the syslog
+                Environment = [ "PYTHONUNBUFFERED=true" ];
+
+                User = "root";
+                ExecStart =
+                  "${self.packages."${system}".photobooth-app}/bin/app.py";
+
                 Restart = "on-failure";
                 RestartSec = "5s";
               };
@@ -102,71 +92,41 @@
               doCheck = false;
             };
 
-          photobooth-test = pkgs.buildGoModule rec {
-
-            pname = "photobooth-test";
-            version = "0.0.10";
-
-            vendorSha256 = null;
-
-            buildInputs = with pkgs; [
-              libglvnd.dev
-              xlibs.libXext.dev
-              xlibs.libXi.dev
-              xorg.libX11
-              xorg.libX11.dev
-              xorg.libXcursor
-              xorg.libXft
-              xorg.libXinerama
-              xorg.libXrandr
-              xorg.libXxf86vm
-              xorg.xinput
-            ];
-
-            nativeBuildInputs = with pkgs; [ pkg-config ];
-            src =  ./golang-version;
-          };
-
-          photobooth-print = pkgs.python3Packages.buildPythonApplication {
-            pname = "photobooth-print";
+          photobooth-app = pkgs.python3Packages.buildPythonApplication {
+            pname = "photobooth-app";
             version = "1.0";
+
             propagatedBuildInputs = with pkgs.python3Packages; [
+              python-periphery
               packages.python-escpos
               opencv4
             ];
             doCheck = false;
-            src = ./.;
+            src = ./photobooth-app;
           };
 
-          photobooth-listen-test = pkgs.python3Packages.buildPythonApplication {
-            pname = "photobooth-listen-test";
-            version = "1.0";
-            doCheck = false;
-            src = ./test;
-          };
-
-          # photobooth-web = pkgs.python3Packages.buildPythonApplication {
-          #   pname = "photobooth-web";
-          #   version = "1.0";
-          #   propagatedBuildInputs = with pkgs.python3Packages; [ flask ];
-          #   src = ./.;
-          # };
-
+          # Generate a sd-card image for the pi
+          # nix build '.#raspi-image'
+          raspi-image =
+            self.nixosConfigurations.photobooth-pi.config.system.build.sdImage;
         };
 
         apps = {
-          photobooth-print = flake-utils.lib.mkApp {
-            drv = packages.photobooth-print;
-            exePath = "/bin/print.py";
+          # Actual photobooth application
+          photobooth-app = flake-utils.lib.mkApp {
+            drv = packages.photobooth-app;
+            exePath = "/bin/app.py";
           };
 
-          photobooth-listen-test = flake-utils.lib.mkApp {
-            drv = packages.photobooth-listen-test;
-            exePath = "/bin/test.py";
+          # Testing helper app, print a snapshot and exit
+          photobooth-testprint = flake-utils.lib.mkApp {
+            drv = packages.photobooth-app;
+            exePath = "/bin/testprint.py";
           };
         };
 
-        # defaultApp = apps.photobooth-print;
-        # defaultPackage = packages.photobooth-print;
+        # `nix run` will print a testprint
+        defaultApp = apps.photobooth-testprint;
+        defaultPackage = packages.photobooth-app;
       });
 }
