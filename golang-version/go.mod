@@ -13,4 +13,4 @@ require (
 	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9 // indirect
 )
 
-replace github.com/hennedo/escpos => ./escpos-fork
+replace github.com/hennedo/escpos => ../escpos-fork

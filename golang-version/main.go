@@ -22,6 +22,9 @@ func main() {
 
 	p := escpos.New(socket)
 
+	// add here:
+	p.SetConfig(escpos.ConfigEpsonTMT88II)
+
 	f, err := os.Open("./logo.gif")
 	if err != nil {
 		panic(err)
