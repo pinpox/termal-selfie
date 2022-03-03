@@ -64,6 +64,9 @@ func main() {
 	p.LineFeed()
 	p.QRCode("https://github.com/hennedo/escpos", true, 10, escpos.QRCodeErrorCorrectionLevelH)
 
+	log.Println("printing")
+	p.Print()
+
 	p.LineFeed()
 	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
 	p.Size(1, 1).Justify(escpos.JustifyRight).Write("This is a test\n")
