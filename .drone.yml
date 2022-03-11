@@ -21,6 +21,8 @@ steps:
   commands:
   - nix build -v -L '.#python-escpos'
   - whoami
+  - echo $AWS_SECRET_ACCESS_KEY
+  - echo $AWS_ACCESS_KEY_ID
   - nix copy --to 's3://example-nix-cache?profile=default&scheme=https&region=eu-central-1&endpoint=s3.lounge.rocks' $(nix-store -qR result/) -L -vvv
 - name: Build photobooth-app
   commands:
