@@ -20,10 +20,11 @@ steps:
 - name: Build python-escpos
   commands:
   - nix build -v -L '.#python-escpos'
-  - whoami
-  - nix copy --to 's3://example-nix-cache?profile=default&scheme=https&region=eu-central-1&endpoint=s3.lounge.rocks' $(nix-store -qR result/) -L -vvv
+  - echo $AWSCREDS > awscreds
+  - AWS_SHARED_CREDENTIALS_FILE=awscreds nix copy --to 's3://example-nix-cache?profile=default&scheme=https&region=eu-central-1&endpoint=s3.lounge.rocks' $(nix-store -qR result/) -L -vvv
   environment:
-    AWS_SHARED_CREDENTIALS_FILE: /tmp/awscredentials
+    AWSCREDS: 
+     from_secret: s3_access_key
 - name: Build photobooth-app
   commands:
   - nix build -v -L '.#photobooth-app'
