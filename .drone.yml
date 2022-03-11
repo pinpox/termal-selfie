@@ -24,6 +24,11 @@ steps:
   - echo $AWS_SECRET_ACCESS_KEY
   - echo $AWS_ACCESS_KEY_ID
   - nix copy --to 's3://example-nix-cache?profile=default&scheme=https&region=eu-central-1&endpoint=s3.lounge.rocks' $(nix-store -qR result/) -L -vvv
+  environment:
+    AWS_ACCESS_KEY_ID:
+      from_secret: s3_access_key
+    AWS_SECRET_ACCESS_KEY:
+      from_secret: s3_secret_key
 - name: Build photobooth-app
   commands:
   - nix build -v -L '.#photobooth-app'
