@@ -29,7 +29,7 @@ steps:
   #- nix copy --to 's3://example-nix-cache?profile=default&scheme=https&region=eu-central-1&endpoint=s3.lounge.rocks' $(nix-store -qR result/) -L -vvv
   environment:
     AWSCREDS: 
-      from_secret: s3_access_key
+      from_secret: awscreds
 - name: Build photobooth-app
   commands:
   - nix build -v -L '.#photobooth-app'
