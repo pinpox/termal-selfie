@@ -28,8 +28,6 @@ steps:
       from_secret: aws_key
     AWS_SECRET_ACCESS_KEY:
       from_secret: aws_secret
-    AWSCREDS: 
-      from_secret: awscreds
 - name: Build photobooth-app
   commands:
   - nix build -v -L '.#photobooth-app'
